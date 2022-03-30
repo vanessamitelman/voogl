@@ -1,39 +1,26 @@
-import React, { createContext, useContext, useState } from 'react';
-
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { searchApi } from '../services/searchApi';
 const ResultContext = createContext();
-const baseUrl = 'https://google-search3.p.rapidapi.com/api/v1';
 
 export const ResultContextProvider = ({ children }) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('JS Mastery');
-  // '/image' '/videos' etc...
+
   const getResults = async (type) => {
     setIsLoading(true);
-    try {
-      const response = await fetch(`${baseUrl}${type}`, {
-        method: 'GET',
-        headers: {
-          'X-User-Agent': 'desktop',
-          'X-Proxy-Location': 'EU',
-          'X-RapidAPI-Host': 'google-search3.p.rapidapi.com',
-          'X-RapidAPI-Key': process.env.REACT_APP_API_KEY
-        }
-      });
-      const data = await response.json();
-      if (type.includes('/news')) {
-        setResults(data.entries);
-      } else if (type.includes('/image')) {
-        setResults(data.image_results);
-      } else {
-        setResults(data.results);
-      }
+    const data = await searchApi(type);
 
-      setIsLoading(false);
-    } catch (e) {
-      console.log(e);
+    if (type.includes('/news')) {
+      setResults(data.entries);
+    } else if (type.includes('/image')) {
+      setResults(data.image_results);
+    } else {
+      setResults(data.results);
     }
+    setIsLoading(false);
   };
+
   return (
     <ResultContext.Provider
       value={{
