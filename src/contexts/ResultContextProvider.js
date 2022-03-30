@@ -17,11 +17,10 @@ const response = await fetch(`${baseUrl}${type}`, {
         'X-User-Agent': 'desktop',
         'X-Proxy-Location': 'EU',
         'X-RapidAPI-Host': 'google-search3.p.rapidapi.com',
-        'X-RapidAPI-Key': '004b8b5689msha5cbff8f022b1f3p1330e1jsn92e844297c2b'
+        'X-RapidAPI-Key': process.env.REACT_APP_API_KEY
       }
     });
     const data = await response.json();
-
     if (type.includes('/news')) {
       setResults(data.entries);
     } else if (type.includes('/image')) {
